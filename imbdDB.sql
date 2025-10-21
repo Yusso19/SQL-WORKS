@@ -105,3 +105,73 @@ WHERE m.IMDB_Rating > (SELECT AVG(IMDB_Rating) FROM Movies)
 ORDER BY m.IMDB_Rating DESC;
 
 SELECT * FROM Movies
+
+
+----2 taskim
+
+-- Создаём базу данных
+CREATE DATABASE SpotifyDB;
+GO
+
+USE SpotifyDB;
+GO
+
+-- Таблица исполнителей
+CREATE TABLE Artists (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Country NVARCHAR(50)
+);
+
+-- Таблица альбомов
+CREATE TABLE Albums (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    ReleaseDate DATE,
+    ArtistId INT FOREIGN KEY REFERENCES Artists(Id)
+);
+
+-- Таблица песен
+CREATE TABLE Musics (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    TotalSeconds INT NOT NULL,
+    AlbumId INT FOREIGN KEY REFERENCES Albums(Id),
+    ArtistId INT FOREIGN KEY REFERENCES Artists(Id)
+);
+
+-- Добавим артистов
+INSERT INTO Artists (Name, Country)
+VALUES ('Eminem', 'USA'),
+       ('Rihanna', 'Barbados');
+
+-- Добавим альбомы
+INSERT INTO Albums (Name, ReleaseDate, ArtistId)
+VALUES ('Curtain Call 2', '2022-08-05', 1),
+       ('The Eminem Show', '2002-05-26', 1);
+
+-- Добавим песни
+INSERT INTO Musics (Name, TotalSeconds, AlbumId, ArtistId)
+VALUES ('Mockingbird', 251, 1, 1),
+       ('Without Me', 290, 2, 1),
+       ('Cleanin Out My Closet', 297, 2, 1);
+
+
+
+--1query
+SELECT 
+    m.Name AS MusicName,
+    m.TotalSeconds,
+    a.Name AS ArtistName,
+    al.Name AS AlbumName
+FROM Musics m
+JOIN Artists a ON m.ArtistId = a.Id
+JOIN Albums al ON m.AlbumId = al.Id;
+
+--2query
+SELECT 
+    al.Name AS AlbumName,
+    COUNT(m.Id) AS MusicCount
+FROM Albums al
+LEFT JOIN Musics m ON al.Id = m.AlbumId
+GROUP BY al.Name;
