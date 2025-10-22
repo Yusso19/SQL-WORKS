@@ -1,0 +1,30 @@
+CREATE DATABASE RestaurantDB;
+GO
+
+USE RestaurantDB;
+GO
+CREATE TABLE Meals
+(
+Id INT IDENTITY(1,1) PRIMARY KEY,
+[Name] NVARCHAR(100),
+Price DECIMAL(10,2)
+);
+
+CREATE TABLE [Tables]
+(
+Id INT IDENTITY(1,1) PRIMARY KEY,
+[No] INT
+)
+
+
+CREATE TABLE Orders 
+(
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    TableId INT ,
+    MealId INT ,
+    OrderDate DATETIME,
+
+    FOREIGN KEY (TableId) REFERENCES Tables(Id),
+    FOREIGN KEY (MealId) REFERENCES Meals(Id)
+);
+
